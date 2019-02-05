@@ -80,11 +80,11 @@ type GreeterHandler interface {
 }
 
 func RegisterGreeterHandler(s server.Server, hdlr GreeterHandler, opts ...server.HandlerOption) error {
-	type greeter interface {
+	type EmbeddedGreeter interface {
 		Hello(ctx context.Context, in *Request, out *Response) error
 	}
 	type Greeter struct {
-		greeter
+		EmbeddedGreeter
 	}
 	h := &greeterHandler{hdlr}
 	return s.Handle(s.NewHandler(&Greeter{h}, opts...))
