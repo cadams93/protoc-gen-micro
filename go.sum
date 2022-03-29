@@ -7,10 +7,13 @@ github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSs
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/divisionone/cli v0.2.1/go.mod h1:xpIXFetJ44HTKOlk9780MSXE0UuFfJNogqXjouew4H4=
-github.com/divisionone/go-micro v0.0.0-20201012003001-b27cad12dff5 h1:BbPkXJnG3CeNM0B9CeEmcROvuYvkiZczWlp01bPxiWg=
-github.com/divisionone/go-micro v0.0.0-20201012003001-b27cad12dff5/go.mod h1:lWDhM5ru0nTYEfvLdQNYNIjlLcsXnrP4WDv2P43z+vE=
-github.com/divisionone/go-rcache v0.0.0-20180409064418-3bf8d45e6c93 h1:4rjMcsRjA95mwMBUsvUWlDhz3FkL96Kd+VNvgeHhUew=
+github.com/divisionone/go-micro v0.0.0-20220329232741-33c0a3fdc985 h1:FhJOShRRS6P2mbfkY8Df4tvckmLsPyTi2ZVEtTje+/s=
+github.com/divisionone/go-micro v0.0.0-20220329232741-33c0a3fdc985/go.mod h1:lWDhM5ru0nTYEfvLdQNYNIjlLcsXnrP4WDv2P43z+vE=
 github.com/divisionone/go-rcache v0.0.0-20180409064418-3bf8d45e6c93/go.mod h1:vJbF4YAo+Lai8N/YQMGMvUnkzlFJ3ugh/CL1LbUnsIY=
+github.com/divisionone/go-rcache v0.0.0-20220329231325-c477acda90f2 h1:LEW63PzozPSowIJzRZrYho2enMIi360O4eoa1Yy2BH0=
+github.com/divisionone/go-rcache v0.0.0-20220329231325-c477acda90f2/go.mod h1:vJbF4YAo+Lai8N/YQMGMvUnkzlFJ3ugh/CL1LbUnsIY=
+github.com/divisionone/micro-go-log v0.0.0-20220329225141-38dfc0353446 h1:pM9fjBsuxrj3Lqb/0SfS6AFi0ytXjgiGuJ/TNdcNc14=
+github.com/divisionone/micro-go-log v0.0.0-20220329225141-38dfc0353446/go.mod h1:b503xepXb6aQF+cDtsd6iG5Y6dJ0Sc7SUoRIiFOYskk=
 github.com/divisionone/util v0.0.0-20180409064546-d45e66572862 h1:cbw9JYClwnu5XoZ0e57H+GofGdgmBLsom4At0pMOl5s=
 github.com/divisionone/util v0.0.0-20180409064546-d45e66572862/go.mod h1:SScT9PnJkWkQIogZr3xEmqBEzKpw7zRgQ4IrizowkwI=
 github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=
@@ -77,7 +80,6 @@ github.com/mattn/go-isatty v0.0.10/go.mod h1:qgIWMr58cqv1PHHyhnkY9lrL7etaEgOFcME
 github.com/mattn/go-isatty v0.0.11/go.mod h1:PhnuNfih5lzO57/f3n+odYbM4JtupLOxQOAqxQCu2WE=
 github.com/mattn/go-isatty v0.0.12 h1:wuysRhFDzyxgEmMf5xjvJ2M9dZoWAXNNr5LSBS7uHXY=
 github.com/mattn/go-isatty v0.0.12/go.mod h1:cbi8OIDigv2wuxKPP5vlRcQ1OAZbq2CE4Kysco4FUpU=
-github.com/micro/go-log v0.1.0 h1:szYSR+yyTsomZM2jyinJC5562DlqffSjHmTZFaeZ2vY=
 github.com/micro/go-log v0.1.0/go.mod h1:qaFBF6d6Jk01Gz4cbMkCA2vVuLk3FSaLLjmEGrMCreA=
 github.com/micro/mdns v0.3.0/go.mod h1:KJ0dW7KmicXU2BV++qkLlmHYcVv7/hHnbtguSWt9Aoc=
 github.com/miekg/dns v1.0.14/go.mod h1:W1PPwlIAgtquWBMBEV9nkV9Cazfe8ScdGz/Lj7v3Nrg=
