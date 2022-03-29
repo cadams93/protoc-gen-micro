@@ -6,16 +6,16 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/divisionone/protoc-gen-micro/generator"
 	pb "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	"github.com/micro/protoc-gen-micro/generator"
 )
 
 // Paths for packages used by code generated in this file,
 // relative to the import_prefix of the generator.Generator.
-var (
+const (
 	contextPkgPath = "context"
-	clientPkgPath  = "github.com/micro/go-micro/client"
-	serverPkgPath  = "github.com/micro/go-micro/server"
+	clientPkgPath  = "github.com/divisionone/go-micro/client"
+	serverPkgPath  = "github.com/divisionone/go-micro/server"
 )
 
 func init() {
@@ -25,8 +25,7 @@ func init() {
 // micro is an implementation of the Go protocol buffer compiler's
 // plugin architecture.  It generates bindings for go-micro support.
 type micro struct {
-	gen        *generator.Generator
-	importSubs *strings.Replacer
+	gen *generator.Generator
 }
 
 // Name returns the name of this plugin, "micro".
@@ -46,31 +45,9 @@ var (
 // Init initializes the plugin.
 func (g *micro) Init(gen *generator.Generator) {
 	g.gen = gen
-
-	g.parseArguments()
-
 	contextPkg = generator.RegisterUniquePackageName("context", nil)
 	clientPkg = generator.RegisterUniquePackageName("client", nil)
 	serverPkg = generator.RegisterUniquePackageName("server", nil)
-}
-
-// Parse the input arguments to load import substitution
-func (g *micro) parseArguments() {
-	var importReplacements []string
-	for name, value := range g.gen.Param {
-		if len(name) < 2 {
-			continue
-		}
-		offset := 0
-		if name[offset] == 'I' {
-			offset++
-			if name[offset] == '=' {
-				offset++
-			}
-			importReplacements = append(importReplacements, name[offset:], value)
-		}
-	}
-	g.importSubs = strings.NewReplacer(importReplacements...)
 }
 
 // Given a type name defined in a .proto, return its object.
@@ -110,9 +87,9 @@ func (g *micro) GenerateImports(file *generator.FileDescriptor) {
 		return
 	}
 	g.P("import (")
-	g.P(contextPkg, " ", strconv.Quote(path.Join(g.gen.ImportPrefix, g.importSubs.Replace(contextPkgPath))))
-	g.P(clientPkg, " ", strconv.Quote(path.Join(g.gen.ImportPrefix, g.importSubs.Replace(clientPkgPath))))
-	g.P(serverPkg, " ", strconv.Quote(path.Join(g.gen.ImportPrefix, g.importSubs.Replace(serverPkgPath))))
+	g.P(contextPkg, " ", strconv.Quote(path.Join(g.gen.ImportPrefix, contextPkgPath)))
+	g.P(clientPkg, " ", strconv.Quote(path.Join(g.gen.ImportPrefix, clientPkgPath)))
+	g.P(serverPkg, " ", strconv.Quote(path.Join(g.gen.ImportPrefix, serverPkgPath)))
 	g.P(")")
 	g.P()
 }
@@ -212,7 +189,7 @@ func (g *micro) generateService(file *generator.FileDescriptor, service *pb.Serv
 
 	// Server registration.
 	g.P("func Register", servName, "Handler(s ", serverPkg, ".Server, hdlr ", serverType, ", opts ...", serverPkg, ".HandlerOption) error {")
-	g.P("type Embedded", servName, " interface {")
+	g.P("type ", unexport(servName), " interface {")
 
 	// generate interface methods
 	for _, method := range service.Method {
@@ -228,7 +205,7 @@ func (g *micro) generateService(file *generator.FileDescriptor, service *pb.Serv
 	}
 	g.P("}")
 	g.P("type ", servName, " struct {")
-	g.P("Embedded", servName)
+	g.P(unexport(servName))
 	g.P("}")
 	g.P("h := &", unexport(servName), "Handler{hdlr}")
 	g.P("return s.Handle(s.NewHandler(&", servName, "{h}, opts...))")

@@ -19,8 +19,8 @@ import math "math"
 
 import (
 	context "context"
-	client "github.com/micro/go-micro/client"
-	server "github.com/micro/go-micro/server"
+	client "github.com/divisionone/go-micro/client"
+	server "github.com/divisionone/go-micro/server"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -80,11 +80,11 @@ type GreeterHandler interface {
 }
 
 func RegisterGreeterHandler(s server.Server, hdlr GreeterHandler, opts ...server.HandlerOption) error {
-	type EmbeddedGreeter interface {
+	type greeter interface {
 		Hello(ctx context.Context, in *Request, out *Response) error
 	}
 	type Greeter struct {
-		EmbeddedGreeter
+		greeter
 	}
 	h := &greeterHandler{hdlr}
 	return s.Handle(s.NewHandler(&Greeter{h}, opts...))
