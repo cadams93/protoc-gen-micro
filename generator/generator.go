@@ -64,13 +64,6 @@ import (
 // a constant, proto.ProtoPackageIsVersionN (where N is generatedCodeVersion).
 const generatedCodeVersion = 2
 
-type pathType int
-
-const (
-	pathTypeImport pathType = iota
-	pathTypeSourceRelative
-)
-
 // A Plugin provides functionality to add to the output during Go code generation,
 // such as to produce RPC stubs.
 type Plugin interface {
@@ -321,16 +314,12 @@ func (d *FileDescriptor) goPackageName() (name string, explicit bool) {
 }
 
 // goFileName returns the output name for the generated Go file.
-func (d *FileDescriptor) goFileName(pathType pathType) string {
+func (d *FileDescriptor) goFileName() string {
 	name := *d.Name
 	if ext := path.Ext(name); ext == ".proto" || ext == ".protodevel" {
 		name = name[:len(name)-len(ext)]
 	}
 	name += ".micro.go"
-
-	if pathType == pathTypeSourceRelative {
-		return name
-	}
 
 	// Does the file have a "go_package" option?
 	// If it does, it may override the filename.
@@ -582,9 +571,7 @@ type Generator struct {
 	typeNameToObject map[string]Object          // Key is a fully-qualified name in input syntax.
 	init             []string                   // Lines to emit in the init function.
 	indent           string
-	pathType         pathType // How to generate output filenames.
-
-	writeOutput bool
+	writeOutput      bool
 }
 
 // New creates a new generator and allocates the request and response protobufs.
@@ -631,15 +618,6 @@ func (g *Generator) CommandLineParameters(parameter string) {
 			g.ImportPrefix = v
 		case "import_path":
 			g.PackageImportPath = v
-		case "paths":
-			switch v {
-			case "import":
-				g.pathType = pathTypeImport
-			case "source_relative":
-				g.pathType = pathTypeSourceRelative
-			default:
-				g.Fail(fmt.Sprintf(`Unknown path type %q: want "import" or "source_relative".`, v))
-			}
 		case "plugins":
 			pluginList = v
 		default:
@@ -831,7 +809,6 @@ AllFiles:
 func (g *Generator) WrapTypes() {
 	g.allFiles = make([]*FileDescriptor, 0, len(g.Request.ProtoFile))
 	g.allFilesByName = make(map[string]*FileDescriptor, len(g.allFiles))
-
 	for _, f := range g.Request.ProtoFile {
 		// We must wrap the descriptors before we wrap the enums
 		descs := wrapDescriptors(f)
@@ -1166,7 +1143,7 @@ func (g *Generator) GenerateAllFiles() {
 			continue
 		}
 		g.Response.File = append(g.Response.File, &plugin.CodeGeneratorResponse_File{
-			Name:    proto.String(file.goFileName(g.pathType)),
+			Name:    proto.String(file.goFileName()),
 			Content: proto.String(g.String()),
 		})
 	}
@@ -1354,10 +1331,10 @@ func (g *Generator) generateImports() {
 	for i, s := range g.file.Dependency {
 		fd := g.fileByName(s)
 		// Do not import our own package.
-		if *fd.Package == g.packageName {
+		if fd.PackageName() == g.packageName {
 			continue
 		}
-		filename := fd.goFileName(g.pathType)
+		filename := fd.goFileName()
 		// By default, import path is the dirname of the Go filename.
 		importPath := path.Dir(filename)
 		if substitution, ok := g.ImportMap[s]; ok {
