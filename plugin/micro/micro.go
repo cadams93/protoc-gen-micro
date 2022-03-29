@@ -6,16 +6,16 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/divisionone/protoc-gen-micro/generator"
 	pb "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	"github.com/micro/protoc-gen-micro/generator"
 )
 
 // Paths for packages used by code generated in this file,
 // relative to the import_prefix of the generator.Generator.
 const (
 	contextPkgPath = "context"
-	clientPkgPath  = "github.com/micro/go-micro/client"
-	serverPkgPath  = "github.com/micro/go-micro/server"
+	clientPkgPath  = "github.com/divisionone/go-micro/client"
+	serverPkgPath  = "github.com/divisionone/go-micro/server"
 )
 
 func init() {

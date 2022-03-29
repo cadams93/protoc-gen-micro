@@ -52,9 +52,9 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/divisionone/protoc-gen-micro/generator"
+	_ "github.com/divisionone/protoc-gen-micro/plugin/micro"
 	"github.com/golang/protobuf/proto"
-	"github.com/micro/protoc-gen-micro/generator"
-	_ "github.com/micro/protoc-gen-micro/plugin/micro"
 )
 
 func main() {
