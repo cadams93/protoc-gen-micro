@@ -3,7 +3,9 @@ module github.com/divisionone/protoc-gen-micro
 go 1.14
 
 require (
-	github.com/divisionone/go-micro v0.0.0-20201012003001-b27cad12dff5
+	github.com/divisionone/go-micro v0.0.0-20220329232741-33c0a3fdc985
+	github.com/divisionone/go-rcache v0.0.0-20220329231325-c477acda90f2 // indirect
+	github.com/divisionone/micro-go-log v0.0.0-20220329225141-38dfc0353446 // indirect
 	github.com/golang/protobuf v1.3.5
 	github.com/hashicorp/consul/api v1.5.0 // indirect
 	github.com/hashicorp/go-msgpack v0.5.4 // indirect
