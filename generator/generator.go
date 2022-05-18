@@ -47,6 +47,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"sort"
 	"strconv"
 	"strings"
 	"unicode"
@@ -1328,12 +1329,20 @@ func (g *Generator) generateImports() {
 	g.P("import " + g.Pkg["proto"] + " " + strconv.Quote(g.ImportPrefix+"github.com/golang/protobuf/proto"))
 	g.P("import " + g.Pkg["fmt"] + ` "fmt"`)
 	g.P("import " + g.Pkg["math"] + ` "math"`)
+
+	importPaths := make([]string, 0, len(g.file.Dependency))
+	importPathInfo := make(map[string]struct {
+		idx int
+		fd  *FileDescriptor
+	})
+
 	for i, s := range g.file.Dependency {
 		fd := g.fileByName(s)
 		// Do not import our own package.
 		if fd.PackageName() == g.packageName {
 			continue
 		}
+
 		filename := fd.goFileName()
 		// By default, import path is the dirname of the Go filename.
 		importPath := path.Dir(filename)
@@ -1341,20 +1350,43 @@ func (g *Generator) generateImports() {
 			importPath = substitution
 		}
 		importPath = g.ImportPrefix + importPath
-		// Skip weak imports.
-		if g.weak(int32(i)) {
-			g.P("// skipping weak import ", fd.PackageName(), " ", strconv.Quote(importPath))
+
+		if _, ok := importPathInfo[importPath]; ok {
 			continue
 		}
+
+		importPaths = append(importPaths, importPath)
+		importPathInfo[importPath] = struct {
+			idx int
+			fd  *FileDescriptor
+		}{
+			idx: i,
+			fd:  fd,
+		}
+	}
+
+	sort.Strings(importPaths)
+
+	for _, path := range importPaths {
+		info := importPathInfo[path]
+
+		// Skip weak imports.
+		if g.weak(int32(info.idx)) {
+			g.P("// skipping weak import ", info.fd.PackageName(), " ", strconv.Quote(path))
+			continue
+		}
+
 		// We need to import all the dependencies, even if we don't reference them,
 		// because other code and tools depend on having the full transitive closure
 		// of protocol buffer types in the binary.
-		pname := fd.PackageName()
+		pname := info.fd.PackageName()
 		if _, ok := g.usedPackages[pname]; !ok {
 			pname = "_"
 		}
-		g.P("import ", pname, " ", strconv.Quote(importPath))
+
+		g.P("import ", pname, " ", strconv.Quote(path))
 	}
+
 	g.P()
 	// TODO: may need to worry about uniqueness across plugins
 	for _, p := range plugins {
@@ -1365,14 +1397,29 @@ func (g *Generator) generateImports() {
 	g.P("var _ = ", g.Pkg["proto"], ".Marshal")
 	g.P("var _ = ", g.Pkg["fmt"], ".Errorf")
 	g.P("var _ = ", g.Pkg["math"], ".Inf")
-	for pkgName, typeName := range g.usedPackages {
-		if pkgName != g.packageName {
-			if parts := strings.Split(typeName, "."); len(parts) > 0 {
-				typeName = parts[len(parts)-1]
-			}
-			g.P("var _ = ", pkgName, ".", typeName, "{}")
-		}
+
+	usedPackageNames := make([]string, 0, len(g.usedPackages))
+
+	for pkgName := range g.usedPackages {
+		usedPackageNames = append(usedPackageNames, pkgName)
 	}
+
+	sort.Strings(usedPackageNames)
+
+	for _, pkgName := range usedPackageNames {
+		if pkgName == g.packageName {
+			continue
+		}
+
+		typeName := g.usedPackages[pkgName]
+
+		if parts := strings.Split(typeName, "."); len(parts) > 0 {
+			typeName = parts[len(parts)-1]
+		}
+
+		g.P("var _ = ", pkgName, ".", typeName, "{}")
+	}
+
 	g.P()
 }
 
