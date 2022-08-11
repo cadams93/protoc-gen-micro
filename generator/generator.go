@@ -839,6 +839,12 @@ func (g *Generator) WrapTypes() {
 		if fd == nil {
 			g.Fail("could not find file named", fileName)
 		}
+
+		// If the file has no services defined, skip it.
+		if len(fd.GetService()) == 0 {
+			continue
+		}
+
 		fd.index = len(g.genFiles)
 		g.genFiles = append(g.genFiles, fd)
 	}
