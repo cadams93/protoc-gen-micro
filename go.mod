@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/divisionone/go-micro v1.5.0
-	github.com/golang/protobuf v1.5.2
+	github.com/golang/protobuf v1.3.5
 )
 
 require (
@@ -33,5 +33,4 @@ require (
 	github.com/pborman/uuid v1.2.1 // indirect
 	github.com/pkg/errors v0.8.1 // indirect
 	golang.org/x/sys v0.3.0 // indirect
-	google.golang.org/protobuf v1.26.0 // indirect
 )
