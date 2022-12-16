@@ -3,15 +3,18 @@ module github.com/divisionone/protoc-gen-micro
 go 1.19
 
 require (
-	github.com/divisionone/go-micro v0.9.1-0.20221207071810-19ca01a57ff3
-	github.com/golang/protobuf v1.3.5
+	github.com/divisionone/go-micro v1.5.0
+	github.com/golang/protobuf v1.5.2
 )
 
 require (
 	github.com/armon/go-metrics v0.0.0-20180917152333-f0300d1749da // indirect
-	github.com/divisionone/go-rcache v0.0.0-20221207064910-5d97c790e129 // indirect
-	github.com/divisionone/micro-go-log v0.0.0-20221207065711-3a2b09240c2d // indirect
-	github.com/divisionone/util v0.0.0-20221207064911-3b3a602ef39f // indirect
+	github.com/divisionone/go-micro/metadata v1.5.0 // indirect
+	github.com/divisionone/go-micro/registry v1.5.0 // indirect
+	github.com/divisionone/go-micro/selector v1.5.1 // indirect
+	github.com/divisionone/go-rcache v1.5.0 // indirect
+	github.com/divisionone/micro-go-log v1.5.0 // indirect
+	github.com/divisionone/util v1.5.0 // indirect
 	github.com/fatih/color v1.9.0 // indirect
 	github.com/go-log/log v0.2.0 // indirect
 	github.com/google/uuid v1.0.0 // indirect
@@ -30,5 +33,5 @@ require (
 	github.com/pborman/uuid v1.2.1 // indirect
 	github.com/pkg/errors v0.8.1 // indirect
 	golang.org/x/sys v0.3.0 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
+	google.golang.org/protobuf v1.26.0 // indirect
 )
