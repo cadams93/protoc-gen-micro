@@ -30,9 +30,9 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /*
-	The code generator for the plugin for the Google protocol buffer compiler.
-	It generates Go code from the protocol buffer description files read by the
-	main routine.
+The code generator for the plugin for the Google protocol buffer compiler.
+It generates Go code from the protocol buffer description files read by the
+main routine.
 */
 package generator
 
@@ -58,12 +58,6 @@ import (
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 )
-
-// generatedCodeVersion indicates a version of the generated code.
-// It is incremented whenever an incompatibility between the generated code and
-// proto package is introduced; the generated code references
-// a constant, proto.ProtoPackageIsVersionN (where N is generatedCodeVersion).
-const generatedCodeVersion = 2
 
 // A Plugin provides functionality to add to the output during Go code generation,
 // such as to produce RPC stubs.
@@ -496,7 +490,6 @@ func (ms *messageSymbol) GenerateAlias(g *Generator, pkg string) {
 
 		g.P("func (m *", ms.sym, ") ", get.name, "() ", typ, " { return ", val, " }")
 	}
-
 }
 
 type enumSymbol struct {
@@ -1180,15 +1173,6 @@ func (g *Generator) generate(file *FileDescriptor) {
 	g.file = g.FileOf(file.FileDescriptorProto)
 	g.usedPackages = make(map[string]string)
 
-	if g.file.index == 0 {
-		// For one file in the package, assert version compatibility.
-		g.P("// This is a compile-time assertion to ensure that this generated file")
-		g.P("// is compatible with the proto package it is being compiled against.")
-		g.P("// A compilation error at this line likely means your copy of the")
-		g.P("// proto package needs to be updated.")
-		g.P("const _ = ", g.Pkg["proto"], ".ProtoPackageIsVersion", generatedCodeVersion, " // please upgrade the proto package")
-		g.P()
-	}
 	for _, td := range g.file.imp {
 		g.generateImported(td)
 	}
@@ -1214,7 +1198,7 @@ func (g *Generator) generate(file *FileDescriptor) {
 	// Run the plugins before the imports so we know which imports are necessary.
 	g.runPlugins(file)
 
-	//g.generateFileDescriptor(file)
+	// g.generateFileDescriptor(file)
 
 	// Generate header and imports last, though they appear first in the output.
 	rem := g.Buffer
@@ -1329,10 +1313,9 @@ func (g *Generator) weak(i int32) bool {
 
 // Generate the imports
 func (g *Generator) generateImports() {
-	// We almost always need a proto import.  Rather than computing when we
+	// We almost always need a fmt and math import.  Rather than computing when we
 	// do, which is tricky when there's a plugin, just import it and
-	// reference it later. The same argument applies to the fmt and math packages.
-	g.P("import " + g.Pkg["proto"] + " " + strconv.Quote(g.ImportPrefix+"github.com/golang/protobuf/proto"))
+	// reference it later.
 	g.P("import " + g.Pkg["fmt"] + ` "fmt"`)
 	g.P("import " + g.Pkg["math"] + ` "math"`)
 
@@ -1400,7 +1383,6 @@ func (g *Generator) generateImports() {
 		g.P()
 	}
 	g.P("// Reference imports to suppress errors if they are not otherwise used.")
-	g.P("var _ = ", g.Pkg["proto"], ".Marshal")
 	g.P("var _ = ", g.Pkg["fmt"], ".Errorf")
 	g.P("var _ = ", g.Pkg["math"], ".Inf")
 
@@ -1546,6 +1528,7 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 // The tag is a string like "varint,2,opt,name=fieldname,def=7" that
 // identifies details of the field for the protocol buffer marshaling and unmarshaling
 // code.  The fields are:
+//
 //	wire encoding
 //	protocol tag number
 //	opt,req,rep for optional, required, or repeated
@@ -1554,6 +1537,7 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 //	enum= the name of the enum type if it is an enum-typed field.
 //	proto3 if this field is in a proto3 message
 //	def= string representation of the default value, if any.
+//
 // The default value must be in a representation that can be used at run-time
 // to generate the default value. Thus bools become 0 and 1, for instance.
 func (g *Generator) goTag(message *Descriptor, field *descriptor.FieldDescriptorProto, wiretype string) string {
@@ -1646,7 +1630,6 @@ func (g *Generator) goTag(message *Descriptor, field *descriptor.FieldDescriptor
 		if *field.Type == descriptor.FieldDescriptorProto_TYPE_BYTES {
 			name += ",proto3"
 		}
-
 	}
 	oneof := ""
 	if field.OneofIndex != nil {
